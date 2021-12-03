@@ -1,30 +1,18 @@
 <?php
-// src/Controller/DefaultController.php
+
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DefaultController extends AbstractController
+class SupportController extends AbstractController
 {
-
-/**
-     * @Route("/", name="app_index")
-     */
+    #[Route('/support', name: 'support')]
     public function index(): Response
     {
-        
-        return $this->render('base.html.twig', [
-            'website' => 'Wild Séries',
+        return $this->render('support/index.html.twig', [
+            'controller_name' => 'SupportController',
         ]);
     }
-
-
-
-   
-
-
-
-
 }

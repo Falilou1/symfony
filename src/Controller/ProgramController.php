@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Program;
 
 /**
 * @Route("/program", name="program_")
@@ -13,24 +14,45 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProgramController extends AbstractController
 {
     /**
-      * Correspond à la route /program/index et au name "_index"
-      * @Route("/index", name="index")
+      * Show all rows from Program's entity
+      *
+      * @Route("/", name="index")
+      * @return Response A response instance
       */
     public function index(): Response
     {
         
-        return $this->render('program/index.html.twig', [
-            'website' => 'Bienvenue!',
-        ]);
+        $programs = $this->getDoctrine()
+        ->getRepository(Program::class)
+        ->findAll();
+
+        return $this->render(
+            'program/index.html.twig',
+             ['programs' => $programs]
+            );
     }
 
     
-/**
-     * @Route("/{page}", requirements={"page"="\d+"}, methods={"GET"}, name="show")
+    /**
+    * Getting all category
+    * 
+    * @Route("/show/{id<^[0-9]+$>}", name="show")
+    *@return Response
      */
-    public function show(int $page = 4): Response
+    public function show(int $id): Response
     {
-        return $this->render('program/show.html.twig', ['page' => $page]);
+        $program = $this->getDoctrine()
+        ->getRepository(Program::class)
+        ->findOneBy(['id' => $id]);
+
+        if (!$program) {
+            throw $this->createNotFoundException(
+                'No program with id : '.$id.' found in program\'s table.'
+            );
+        }
+        return $this->render('program/show.html.twig', [
+            'program' => $program,
+        ]);
     }
 
 

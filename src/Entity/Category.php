@@ -20,39 +20,23 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $string;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $Program;
+    private $name;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getString(): ?string
+    public function getname(): ?string
     {
-        return $this->string;
+        return $this->name;
     }
 
-    public function setString(string $string): self
+    public function setname(string $name): self
     {
-        $this->string = $string;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getProgram(): ?string
-    {
-        return $this->Program;
-    }
-
-    public function setProgram(string $Program): self
-    {
-        $this->Program = $Program;
-
-        return $this;
-    }
 }
