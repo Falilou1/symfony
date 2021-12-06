@@ -1,5 +1,3 @@
-{% extends 'base.html.twig' %}
-
 {% block title %}Série #{{ program.id }}{% endblock %}
 
 {% block body %}
@@ -9,12 +7,16 @@
             <h1 class="mt-0">{{ program.title }}</h1>
             <p>Sommaire : {{ program.summary }}</p>
             <p>Catégorie : {{ program.category.name }}</p>
-            
-            <p>Saisons : {% for season in seasons %}
-            
+         <h2>   
          <p>Saison : {{ season.number }} - {{ season.year }}</p>
-         {# Lien vers la fiche de la saison : #}
-				<a href="/program/{{ program.id }}/season/{{ season.id }}">Voir la fiche</a>
+            </h2>
+            <p>Liste des Episodes : {% for episode in episodes %}
+            <h3>
+            <p>Episode : {{ episode.number }} - {{ episode.title }}
+                </h3>
+                {# Lien vers la fiche de la saison : #}
+				<a href="/program/{{ program.id }}/season/{{ season.id }}/episode/{{ episodes }}">Voir la fiche</a>
+        
             {% endfor %}
         </div>
     </div>
