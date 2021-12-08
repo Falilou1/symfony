@@ -8,6 +8,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use App\Form\ProgramType;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
 * @Route("/program", name="program_")
@@ -34,12 +37,39 @@ class ProgramController extends AbstractController
             );
     }
 
-    
+    /**
+     * The controller for the program add form
+     *
+     * @Route("/new", name="new")
+     */
+    public function new(Request $request) : Response
+    {
+        // Create a new Program Object
+        $program = new Program();
+        // Create the associated Form
+        $form = $this->createForm(ProgramType::class, $program);
+         // Get data from HTTP request
+         $form->handleRequest($request);
+         // Was the form submitted ?
+        if ($form->isSubmitted()) {
+            // Deal with the submitted data
+            // Get the Entity Manager
+            $entityManager = $this->getDoctrine()->getManager();
+            // Persist Program Object
+            $entityManager->persist($program);
+            // Flush the persisted object
+            $entityManager->flush();
+            // Finally redirect to program list
+          return $this->redirectToRoute('program_index');
+        }
+        return $this->render('program/new.html.twig', ["form" => $form->createView()]);
+    }
+
     /**
     * Getting all category
     * 
     * @Route("/show/{id}", name="show")
-    *@return Response
+    
      */
     public function show(int $id): Response
     {
@@ -52,10 +82,9 @@ class ProgramController extends AbstractController
                 'No program with id : '.$id.' found in program\'s table.'
             );
         }
-        
-        $seasons = $this->getDoctrine()
-        ->getRepository(Season::class)
-        ->findAll();
+    
+
+        $seasons = $program->getSeasons();
 
         if (!$seasons) {
             throw $this->createNotFoundException(
@@ -69,25 +98,39 @@ class ProgramController extends AbstractController
     /**
     * Getting all showSeason
     * 
-    * @Route("/{programId}/season/{seasonId}", name="season_show")
-    *@return Response
+    * @Route("/{program_Id}/season/{season_Id}", name="season_show")
+    * @ParamConverter("program", class="App\Entity\Program", options={"mapping": {"program_Id": "id"}})
+     *@ParamConverter("season", class="App\Entity\Season", options={"mapping": {"season_Id": "id"}})
+
      */
-    public function showSeason(program $programId,  $seasonId): Response
+    public function showSeason(program $program, season $season): Response
     {
-        $program = $this->getDoctrine()
-        ->getRepository(Program::class)
-        ->findOneBy(['id' => $programId]);
-
-
-        $season = $this->getDoctrine()
-        ->getRepository(Season::class)
-        ->findOneBy(['id' => $seasonId]);
-        
         $episodes = $season->getEpisodes();
+
 
         return $this->render('program/season_show.html.twig', [
             'program' => $program, 'season' => $season, 'episodes' => $episodes
         ]);
     }
- 
+    /** 
+    *@Route("/{program_Id}/season/{season_Id}/episode/{episode_Id}", name="episodes_show")
+    *@ParamConverter("program", class="App\Entity\Program", options={"mapping": {"program_Id": "id"}})
+    *@ParamConverter("season", class="App\Entity\Season", options={"mapping": {"season_Id": "id"}})
+    *@ParamConverter("episode", class="App\Entity\Episode", options={"mapping": {"episode_Id": "id"}})
+
+    */
+    public function showEpisode(Program $program, Season $season, Episode $episode)
+{
+
+    return $this->render('program/episodes_show.html.twig', [
+        'program' => $program, 'season' => $season, 'episode' => $episode
+    ]);
+
+}
+
+
+
+
+
+
 }

@@ -16,13 +16,14 @@
          
             </h2>
             <h3>
+            
             <p>Liste des Épisodes : {% for episode in episodes %} </p>
-        {{ episode.number}} - {{episode.title}}
+       <a href="{{ path("program_episodes_show", {"program_Id": program.id, "season_Id": season.id, "episode_Id": episode.id})}}">{{ episode.number}} - {{episode.title}}</a>
+       
         {% else %}
         Épisodes indisponible pour cette saison
          {% endfor %}</h3>
-                {# Lien vers la fiche de la saison : #}
-				<a href="/program/{{ program.id }}/season/{{ season.id }}/episodes/">Voir la fiche</a>
+                
     
         </div>
     </div>
