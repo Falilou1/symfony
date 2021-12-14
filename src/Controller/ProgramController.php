@@ -50,10 +50,11 @@ class ProgramController extends AbstractController
         $form = $this->createForm(ProgramType::class, $program);
          // Get data from HTTP request
          $form->handleRequest($request);
+        
          // Was the form submitted ?
         if ($form->isSubmitted() && $form->isValid()) {
             // Deal with the submitted data
-            // Get the Entity Manager
+            // Get the Entity Manager 
             $entityManager = $this->getDoctrine()->getManager();
             // Persist Program Object
             $entityManager->persist($program);
@@ -82,7 +83,7 @@ class ProgramController extends AbstractController
                 'No program with id : '.$id.' found in program\'s table.'
             );
         }
-    
+        $actors = $program->getActors();
 
         $seasons = $program->getSeasons();
 
@@ -92,7 +93,7 @@ class ProgramController extends AbstractController
             );
         }
         return $this->render('program/show.html.twig', [
-            'seasons' => $seasons, 'program' => $program
+            'seasons' => $seasons, 'program' => $program, 'actors' => $actors
         ]);
     }
     /**
